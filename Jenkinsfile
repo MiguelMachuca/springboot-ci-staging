@@ -22,7 +22,6 @@ pipeline {
         }
         stage('Code Quality') {
             steps {
-                //sh 'mvn checkstyle:check'
                 sh 'mvn checkstyle:check -Dcheckstyle.config.location=checkstyle.xml'
             }
         }
