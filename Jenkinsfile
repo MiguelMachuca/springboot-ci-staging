@@ -22,7 +22,8 @@ pipeline {
         }
         stage('Code Quality') {
             steps {
-                sh 'mvn checkstyle:check'
+                //sh 'mvn checkstyle:check'
+                sh 'mvn checkstyle:check -Dcheckstyle.config.location=checkstyle.xml'
             }
         }
         stage('Test') {
@@ -37,10 +38,7 @@ pipeline {
         }
         stage('Deploy to Staging') {
             steps {
-                /*
-                    sh 'scp target/${ARTIFACT_NAME} $STAGING_SERVER:/home/your-user/staging/'
-                    sh 'ssh $STAGING_SERVER "nohup java -jar /home/your-user/staging/${ARTIFACT_NAME} > /dev/null 2>&1 &"'
-                */
+
                 // Crear directorio remoto si no existe
                 sh """
                     ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
@@ -64,7 +62,7 @@ pipeline {
         }
         stage('Validate Deployment') {
             steps {
-                sh 'sleep 10'
+                //sh 'sleep 10'
                 //sh 'curl --fail http://your-staging-server:8080/health'
             }
         }
