@@ -37,24 +37,25 @@ pipeline {
         }
         stage('Deploy to Staging') {
             steps {
-                sshagent(['vm-ssh-key']) {
-                    // Crear directorio remoto
+                script {
+                    // Crear directorio remoto si no existe
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} \
-                        "mkdir -p ${REMOTE_DIR}"
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
+                        "mkdir -p ${REMOTE_DIR} 
+                        "
                     """
                     
                     // Copiar el artefacto
                     sh """
-                        scp -o StrictHostKeyChecking=no \
+                        scp -o StrictHostKeyChecking=no -i ${SSH_KEY} \
                         ${ARTIFACT_NAME} ${VM_USER}@${VM_IP}:${REMOTE_DIR}${JAR_NAME}
                     """
                     
-                    // Ejecutar la aplicación
+                    // Detener aplicación anterior si existe y ejecutar la nueva
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${VM_USER}@${VM_IP} \
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
                         "cd ${REMOTE_DIR} && \
-                        sudo nohup java -jar ${JAR_NAME} --server.port=80 > app.log 2>&1 &"
+                         sudo nohup java -jar ${JAR_NAME} --server.port=80 > app.log 2>&1 &"
                     """
                 }
             }
