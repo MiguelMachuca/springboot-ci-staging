@@ -19,7 +19,8 @@ pipeline {
         
         stage('Build') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                /*sh 'mvn clean package -DskipTests'*/
+                sh 'mvn clean package spring-boot:repackage -DskipTests'
             }
         }
         
@@ -73,8 +74,6 @@ pipeline {
                 sh """curl --fail http://${VM_IP}:80/health"""
             }
         }        
-    
-
     }
     
     post {
