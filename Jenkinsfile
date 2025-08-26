@@ -11,11 +11,11 @@ pipeline {
         JAR_NAME = "demo-0.0.1-SNAPSHOT.jar"
     }
     stages {
-        /*stage('Clone Repository') {
+        stage('Clone Repository') {
             steps {
-                git 'https://github.com/your-org/your-springboot-repo.git'
+                git 'https://github.com/MiguelMachuca/springboot-ci-staging.git'                
             }
-        }*/
+        }
         
         stage('Build') {
             steps {
