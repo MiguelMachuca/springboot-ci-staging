@@ -40,9 +40,8 @@ pipeline {
                 sh 'mvn jacoco:report'
             }
         }
-
         
-        stage('Deploy to VM') {
+        stage('Deploy to Staging') {
             steps {
                 script {
                     // Crear directorio remoto si no existe
@@ -67,7 +66,14 @@ pipeline {
                 }
             }
         }
-        
+
+        stage('Validate Deployment') {
+            steps {
+                sh 'sleep 10'
+                sh """curl --fail http://${VM_IP}:80/health"""
+            }
+        }        
+    
 
     }
     
