@@ -3,9 +3,9 @@ pipeline {
     
     environment {
         IMAGE_NAME = "demo-ci-cd:latest"
-        VM_IP = "20.206.160.112"                 // IP de tu VM
+        VM_IP = "74.163.99.83"                 // IP de tu VM
         VM_USER = "azureuser"                  // Usuario de tu VM
-        SSH_KEY = credentials('ssh-key-tarea')    // Credencial configurada en Jenkins
+        SSH_KEY = credentials('vm-ssh-key')    // Credencial configurada en Jenkins
         ARTIFACT_NAME = "target/demo-0.0.1-SNAPSHOT.jar"
         REMOTE_DIR = "/home/azureuser/tarea/"
         JAR_NAME = "demo-0.0.1-SNAPSHOT.jar"
