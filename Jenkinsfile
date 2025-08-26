@@ -62,7 +62,7 @@ pipeline {
                         ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
                         "cd ${REMOTE_DIR} && \
                         pkill -f '${JAR_NAME}' || true && \
-                        nohup java -jar ${JAR_NAME} --server.port=80 > app.log 2>&1 &"
+                        nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 &"                        
                     """
                 }
             }
@@ -71,7 +71,7 @@ pipeline {
         stage('Validate Deployment') {
             steps {
                 sh 'sleep 10'
-                sh """curl --fail http://${VM_IP}:80/health"""
+                sh """curl --fail http://${VM_IP}:8080/health"""
             }
         }        
     }
