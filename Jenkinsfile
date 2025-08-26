@@ -58,12 +58,26 @@ pipeline {
                     """
                     
                     // Detener aplicación anterior (si existe) y levantar nueva
-                    sh """
+                    /*sh """
                         ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
                         "cd ${REMOTE_DIR} && \
                         pkill -f '${JAR_NAME}' || true && \
+                        sleep 10 \
                         nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 &"                        
-                    """
+                    """*/
+
+                    sh """
+                        ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
+                        "cd ${REMOTE_DIR} && \
+                        echo '⏹️ Deteniendo aplicación anterior...' && \
+                        pkill -f '${JAR_NAME}' || true && \
+                        
+                        echo '⏳ Esperando a que el puerto 8080 quede libre...' && \
+                        while lsof -i:8080 -t >/dev/null 2>&1; do sleep 2; done && \
+
+                        echo '🚀 Iniciando nueva versión...' && \
+                        nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 &"
+                    """                    
                 }
             }
         }
