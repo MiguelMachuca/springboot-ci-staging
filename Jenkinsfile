@@ -48,8 +48,7 @@ pipeline {
                     // Crear directorio remoto si no existe
                     sh """
                         ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
-                        "mkdir -p ${REMOTE_DIR} 
-                        "
+                        "mkdir -p ${REMOTE_DIR}"
                     """
                     
                     // Copiar el artefacto
@@ -58,11 +57,12 @@ pipeline {
                         ${ARTIFACT_NAME} ${VM_USER}@${VM_IP}:${REMOTE_DIR}${JAR_NAME}
                     """
                     
-                    // Ejecutar la aplicación
+                    // Detener aplicación anterior (si existe) y levantar nueva
                     sh """
                         ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
                         "cd ${REMOTE_DIR} && \
-                         nohup java -jar ${JAR_NAME} --server.port=80 > app.log 2>&1 &"
+                        pkill -f '${JAR_NAME}' || true && \
+                        nohup java -jar ${JAR_NAME} --server.port=80 > app.log 2>&1 &"
                     """
                 }
             }
