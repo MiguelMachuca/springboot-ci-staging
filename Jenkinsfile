@@ -76,8 +76,8 @@ pipeline {
                         while lsof -i:8080 -t >/dev/null 2>&1; do sleep 2; done && \
 
                         echo '🚀 Iniciando nueva versión...' && \
-                        nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 &"
-                    """                    
+                        setsid nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 &"
+                    """                   
                 }
             }
         }
