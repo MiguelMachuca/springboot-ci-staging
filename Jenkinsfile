@@ -66,18 +66,23 @@ pipeline {
                         nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 &"                        
                     """*/
 
+            // Detener aplicación anterior y iniciar nueva con mejor manejo
                     sh """
                         ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
                         "cd ${REMOTE_DIR} && \
                         echo '⏹️ Deteniendo aplicación anterior...' && \
-                        pkill -f '${JAR_NAME}' || true && \
+                        pkill -f 'java.*${JAR_NAME}' || true && \
                         
                         echo '⏳ Esperando a que el puerto 8080 quede libre...' && \
-                        while lsof -i:8080 -t >/dev/null 2>&1; do sleep 2; done && \
+                        timeout 30 bash -c 'while lsof -i:8080 >/dev/null; do sleep 2; done' || true && \
 
                         echo '🚀 Iniciando nueva versión...' && \
-                        setsid nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 &"
-                    """                   
+                        export JAVA_OPTS='-XX:+UseG1GC -Xmx256m -Xms128m' && \
+                        nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 & echo \$! > app.pid && \
+                        
+                        echo '📋 PID guardado: ' && cat app.pid && \
+                        sleep 5"
+                    """                
                 }
             }
         }
