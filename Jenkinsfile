@@ -57,11 +57,11 @@ pipeline {
                         ${ARTIFACT_NAME} ${VM_USER}@${VM_IP}:${REMOTE_DIR}${JAR_NAME}
                     """
                     
-                    // Detener aplicación anterior si existe y ejecutar la nueva
+                    // Ejecutar la aplicación
                     sh """
                         ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
                         "cd ${REMOTE_DIR} && \
-                         sudo nohup java -jar ${JAR_NAME} --server.port=80 > app.log 2>&1 &"
+                         nohup java -jar ${JAR_NAME} --server.port=80 > app.log 2>&1 &"
                     """
                 }
             }
