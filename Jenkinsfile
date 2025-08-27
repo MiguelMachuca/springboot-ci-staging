@@ -61,7 +61,7 @@ pipeline {
                     sh """
                         ssh -o StrictHostKeyChecking=no -i ${SSH_KEY} ${VM_USER}@${VM_IP} \
                         "cd ${REMOTE_DIR} && \
-                        nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 &"                        
+                        setsid nohup java -jar ${JAR_NAME} --server.port=8080 > app.log 2>&1 &"                        
                     """            
                 }
             }
